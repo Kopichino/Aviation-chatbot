@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MH Cockpit Aviation Academy | Professional Pilot Training</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #0b1120 0%, #1e293b 100%);
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "JetBrains Mono", monospace;
+      }
+      .glass-card {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(14, 165, 233, 0.2);
+      }
+      .chat-bubble {
+        animation: slideUp 0.3s ease-out;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .pulse-glow {
+        animation: pulseGlow 2s ease-in-out infinite;
+      }
+      @keyframes pulseGlow {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 30px rgba(14, 165, 233, 0.8);
+        }
+      }
+      .typing-indicator span {
+        animation: typing 1.4s infinite;
+        opacity: 0.3;
+      }
+      .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes typing {
+        0%,
+        60%,
+        100% {
+          opacity: 0.3;
+        }
+        30% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen text-white">
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass-card">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center space-x-2">
+            <svg
+              class="w-8 h-8 text-cyan-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+              />
+            </svg>
+            <span class="text-xl font-bold tracking-wider">MH COCKPIT</span>
+          </div>
+          <div class="hidden md:flex space-x-8">
+            <a href="#training" class="hover:text-cyan-400 transition-colors"
+              >Pilot Training</a
+            >
+            <a href="#fleet" class="hover:text-cyan-400 transition-colors"
+              >Fleet</a
+            >
+            <a href="#admissions" class="hover:text-cyan-400 transition-colors"
+              >Admissions</a
+            >
+          </div>
+          <button class="md:hidden text-cyan-400">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section
+      class="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden"
+    >
+      <!-- Background Image Overlay -->
+      <div class="absolute inset-0 opacity-30">
+        <img
+          src="/placeholder.svg?height=1080&width=1920"
+          alt="Cockpit View"
+          class="w-full h-full object-cover"
+        />
+      </div>
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-transparent via-[#0b1120]/80 to-[#0b1120]"
+      ></div>
+
+      <div
+        class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+      >
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+          CLEARED FOR <span class="text-cyan-400">TAKEOFF</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+          Transform your passion for aviation into a professional career. From
+          Private Pilot to Commercial ratings, we guide you every step of the
+          way.
+        </p>
+        <button
+          class="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg"
+        >
+          Apply Now →
+        </button>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="training" class="py-20 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">
+          Our <span class="text-cyan-400">Flight Programs</span>
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <!-- Private Pilot License -->
+          <div
+            class="glass-card rounded-xl p-8 hover:border-cyan-400 transition-all transform hover:-translate-y-2"
+          >
+            <div
+              class="w-16 h-16 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-6"
+            >
+              <svg
+                class="w-8 h-8 text-cyan-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-4">Private Pilot License</h3>
+            <p class="text-gray-400 mb-6">
+              Begin your journey with comprehensive training. Learn to fly
+              single-engine aircraft and earn your PPL in as little as 6 months.
+            </p>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li class="flex items-center">
+                <span class="text-cyan-400 mr-2">✓</span> 40+ Flight Hours
+              </li>
+              <li class="flex items-center">
+                <span class="text-cyan-400 mr-2">✓</span> Ground School Included
+              </li>
+              <li class="flex items-center">
+                <span class="text-cyan-400 mr-2">✓</span> FAA Certified
+                Instructors
+              </li>
+            </ul>
+          </div>
+
+          <!-- Commercial Pilot License -->
+          <div
+            class="glass-card rounded-xl p-8 hover:border-cyan-400 transition-all transform hover:-translate-y-2"
+          >
+            <div
+              class="w-16 h-16 bg-orange-500/20 rounded-lg flex items-center justify-center mb-6"
+            >
+              <svg
+                class="w-8 h-8 text-orange-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-4">Commercial Pilot License</h3>
+            <p class="text-gray-400 mb-6">
+              Take your skills to the next level. Fly professionally and open
+              doors to airline careers with our CPL program.
+            </p>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li class="flex items-center">
+                <span class="text-orange-500 mr-2">✓</span> 250+ Flight Hours
+              </li>
+              <li class="flex items-center">
+                <span class="text-orange-500 mr-2">✓</span> Multi-Engine
+                Training
+              </li>
+              <li class="flex items-center">
+                <span class="text-orange-500 mr-2">✓</span> Career Placement
+                Support
+              </li>
+            </ul>
+          </div>
+
+          <!-- Ground School -->
+          <div
+            class="glass-card rounded-xl p-8 hover:border-cyan-400 transition-all transform hover:-translate-y-2"
+          >
+            <div
+              class="w-16 h-16 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-6"
+            >
+              <svg
+                class="w-8 h-8 text-cyan-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-4">Ground School</h3>
+            <p class="text-gray-400 mb-6">
+              Master aviation theory with our comprehensive ground school. From
+              aerodynamics to regulations, we've got you covered.
+            </p>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li class="flex items-center">
+                <span class="text-cyan-400 mr-2">✓</span> Online & In-Person
+              </li>
+              <li class="flex items-center">
+                <span class="text-cyan-400 mr-2">✓</span> Exam Prep Included
+              </li>
+              <li class="flex items-center">
+                <span class="text-cyan-400 mr-2">✓</span> Flexible Scheduling
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chatbot Floating Button -->
+    <button
+      id="chatbot-toggle"
+      class="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 rounded-full flex items-center justify-center shadow-2xl transition-all transform hover:scale-110 z-50 pulse-glow"
+    >
+      <svg
+        id="chat-icon"
+        class="w-8 h-8 text-white"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+        />
+      </svg>
+      <svg
+        id="close-icon"
+        class="w-8 h-8 text-white hidden"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+
+    <!-- Chatbot Window -->
+    <div
+      id="chatbot-window"
+      class="fixed bottom-24 right-6 w-96 h-[500px] glass-card rounded-2xl shadow-2xl z-50 hidden flex-col overflow-hidden"
+    >
+      <!-- Chat Header -->
+      <div
+        class="bg-gradient-to-r from-cyan-600 to-cyan-700 p-4 flex items-center justify-between"
+      >
+        <div class="flex items-center space-x-3">
+          <div
+            class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"
+          >
+            <svg
+              class="w-6 h-6 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+              />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold">MH Cockpit Assistant</h3>
+            <p class="text-xs text-cyan-100">Online</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Messages -->
+      <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <!-- Messages will be dynamically added here -->
+      </div>
+
+      <!-- Chat Input -->
+      <div class="p-4 border-t border-cyan-500/20">
+        <div class="flex space-x-2">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Type your message..."
+            class="flex-1 bg-slate-800/50 border border-cyan-500/30 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400"
+          />
+          <button
+            id="send-button"
+            class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg transition-colors"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Generate session ID on page load
+      const sessionId = "user_" + Math.random().toString(36).substr(2, 9);
+      let chatOpened = false;
+
+      const chatbotToggle = document.getElementById("chatbot-toggle");
+      const chatbotWindow = document.getElementById("chatbot-window");
+      const chatMessages = document.getElementById("chat-messages");
+      const chatInput = document.getElementById("chat-input");
+      const sendButton = document.getElementById("send-button");
+      const chatIcon = document.getElementById("chat-icon");
+      const closeIcon = document.getElementById("close-icon");
+
+      // Toggle chatbot window
+      chatbotToggle.addEventListener("click", () => {
+        const isHidden = chatbotWindow.classList.contains("hidden");
+
+        if (isHidden) {
+          chatbotWindow.classList.remove("hidden");
+          chatbotWindow.classList.add("flex");
+          chatIcon.classList.add("hidden");
+          closeIcon.classList.remove("hidden");
+
+          // Show welcome message on first open
+          if (!chatOpened) {
+            addBotMessage(
+              "Welcome to the flight deck! ✈️ Please enter your email to start."
+            );
+            chatOpened = true;
+          }
+        } else {
+          chatbotWindow.classList.add("hidden");
+          chatbotWindow.classList.remove("flex");
+          chatIcon.classList.remove("hidden");
+          closeIcon.classList.add("hidden");
+        }
+      });
+
+      // Add bot message to chat
+      function addBotMessage(message) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = "flex items-start space-x-2 chat-bubble";
+        messageDiv.innerHTML = `
+                <div class="w-8 h-8 bg-cyan-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg rounded-tl-none px-4 py-2 max-w-[80%]">
+                    <p class="text-sm text-gray-200">${message}</p>
+                </div>
+            `;
+        chatMessages.appendChild(messageDiv);
+        scrollToBottom();
+      }
+
+      // Add user message to chat
+      function addUserMessage(message) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className =
+          "flex items-start space-x-2 justify-end chat-bubble";
+        messageDiv.innerHTML = `
+                <div class="bg-cyan-600 rounded-lg rounded-tr-none px-4 py-2 max-w-[80%]">
+                    <p class="text-sm text-white">${message}</p>
+                </div>
+            `;
+        chatMessages.appendChild(messageDiv);
+        scrollToBottom();
+      }
+
+      // Add typing indicator
+      function addTypingIndicator() {
+        const typingDiv = document.createElement("div");
+        typingDiv.id = "typing-indicator";
+        typingDiv.className = "flex items-start space-x-2";
+        typingDiv.innerHTML = `
+                <div class="w-8 h-8 bg-cyan-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg rounded-tl-none px-4 py-3">
+                    <div class="typing-indicator flex space-x-1">
+                        <span class="w-2 h-2 bg-cyan-400 rounded-full"></span>
+                        <span class="w-2 h-2 bg-cyan-400 rounded-full"></span>
+                        <span class="w-2 h-2 bg-cyan-400 rounded-full"></span>
+                    </div>
+                </div>
+            `;
+        chatMessages.appendChild(typingDiv);
+        scrollToBottom();
+      }
+
+      // Remove typing indicator
+      function removeTypingIndicator() {
+        const indicator = document.getElementById("typing-indicator");
+        if (indicator) {
+          indicator.remove();
+        }
+      }
+
+      // Scroll to bottom of chat
+      function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      // Send message to API
+      async function sendMessage(message) {
+        if (!message.trim()) return;
+
+        // Add user message to chat
+        addUserMessage(message);
+        chatInput.value = "";
+
+        // Show typing indicator
+        addTypingIndicator();
+
+        try {
+          const response = await fetch("http://127.0.0.1:8000/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: message,
+              session_id: sessionId,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          const data = await response.json();
+
+          // Remove typing indicator
+          removeTypingIndicator();
+
+          // Add bot response
+          addBotMessage(data.response);
+        } catch (error) {
+          console.error("Error:", error);
+          removeTypingIndicator();
+          addBotMessage(
+            "I'm sorry, I'm having trouble connecting right now. Please try again later or contact us directly at info@mhcockpit.com"
+          );
+        }
+      }
+
+      // Send button click
+      sendButton.addEventListener("click", () => {
+        const message = chatInput.value;
+        sendMessage(message);
+      });
+
+      // Enter key press
+      chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          const message = chatInput.value;
+          sendMessage(message);
+        }
+      });
+    </script>
+  </body>
+</html>
