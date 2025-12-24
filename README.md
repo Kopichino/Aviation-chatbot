@@ -24,7 +24,7 @@ Follow these instructions to set up the project locally on your machine.
 ### Prerequisites
 
 * Git
-* [Node.js / Python] (depending on your stack)
+* Python (depending on your stack)
 * A Google AI Studio API Key
 
 ### Installation
@@ -58,20 +58,14 @@ Follow these instructions to set up the project locally on your machine.
 
 4.  **Run the Application**
     ```bash
-    # Example command:
-    npm start
-    # OR
-    python main.py
+    # To run backend
+    uvicorn backend.main:api --reload
+    # Open index2.html in live server
     ```
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
-1.  Fork the project.
-2.  Create your feature branch (`git checkout -b feature/AmazingFeature`).
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4.  Push to the branch (`git push origin feature/AmazingFeature`).
-5.  Open a Pull Request.
+Contributions are welcome!
 
 ## 📄 License
 
