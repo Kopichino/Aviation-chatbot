@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MH Cockpit Aviation Academy | Professional Pilot Training</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -73,6 +74,27 @@
         30% {
           opacity: 1;
         }
+      }
+      .markdown-content strong {
+        color: #22d3ee; /* Cyan color for bold text */
+        font-weight: 700;
+      }
+      .markdown-content ul {
+        list-style-type: disc;
+        padding-left: 20px;
+        margin: 8px 0;
+      }
+      .markdown-content ol {
+        list-style-type: decimal;
+        padding-left: 20px;
+        margin: 8px 0;
+      }
+      .markdown-content p {
+        margin-bottom: 8px;
+      }
+      .markdown-content a {
+        color: #38bdf8;
+        text-decoration: underline;
       }
     </style>
   </head>
@@ -438,16 +460,21 @@
       function addBotMessage(message) {
         const messageDiv = document.createElement("div");
         messageDiv.className = "flex items-start space-x-2 chat-bubble";
+
+        // 1. Convert Markdown to HTML using marked.parse()
+        // 2. We changed <p> to <div> and added the 'markdown-content' class
         messageDiv.innerHTML = `
-                <div class="w-8 h-8 bg-cyan-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                    </svg>
-                </div>
-                <div class="bg-slate-800/50 rounded-lg rounded-tl-none px-4 py-2 max-w-[80%]">
-                    <p class="text-sm text-gray-200">${message}</p>
-                </div>
-            `;
+        <div class="w-8 h-8 bg-cyan-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            </svg>
+        </div>
+        <div class="bg-slate-800/50 rounded-lg rounded-tl-none px-4 py-2 max-w-[80%]">
+            <div class="text-sm text-gray-200 markdown-content">
+                ${marked.parse(message)}
+            </div>
+        </div>
+    `;
         chatMessages.appendChild(messageDiv);
         scrollToBottom();
       }
