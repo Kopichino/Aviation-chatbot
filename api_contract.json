@@ -1,0 +1,100 @@
+{
+  "api_endpoint": "POST /chat",
+  "description": "Main chat endpoint. Accepts user message and session ID, returns bot text.",
+  "request_format": {
+    "message": "User's text input",
+    "session_id": "Unique string for the user (e.g., UUID)"
+  },
+  "scenarios": [
+    {
+      "scenario": "1. Initial Greeting (No Email)",
+      "request": {
+        "message": "Hi",
+        "session_id": "user_123"
+      },
+      "response": {
+        "response": "Welcome to MH Cockpit! To assist you with brochures and fees, please share your **email address**."
+      }
+    },
+    {
+      "scenario": "2. Invalid Email Input",
+      "request": {
+        "message": "no i wont",
+        "session_id": "user_123"
+      },
+      "response": {
+        "response": "That looks invalid. Please enter a valid email address."
+      }
+    },
+    {
+      "scenario": "3. Valid Email / Chat Start",
+      "request": {
+        "message": "student@gmail.com",
+        "session_id": "user_123"
+      },
+      "response": {
+        "response": "Thank you! How can I help you with your pilot training today?"
+      }
+    },
+    {
+      "scenario": "4. General Question (RAG Response)",
+      "request": {
+        "message": "What is the fee structure?",
+        "session_id": "user_123"
+      },
+      "response": {
+        "response": "The fee for the CPL program is approximately 45 Lakhs..."
+      }
+    },
+    {
+      "scenario": "5. Asking for Personal Details (After 3 queries)",
+      "request": {
+        "message": "Where are you located?",
+        "session_id": "user_123"
+      },
+      "response": {
+        "response": "I'd love to answer that! But first, could you quickly tell me your **Name**, **School**, and **City**? (Format: Name, School, City)"
+      }
+    },
+    {
+      "scenario": "6. Asking for Phone Number (After 6 queries)",
+      "request": {
+        "message": "Tell me about the fleet.",
+        "session_id": "user_123"
+      },
+      "response": {
+        "response": "To provide you with better assistance and brochure details, could you please share your **Phone Number**?"
+      }
+    },
+    {
+      "scenario": "7. Invalid Phone Number",
+      "request": {
+        "message": "123",
+        "session_id": "user_123"
+      },
+      "response": {
+        "response": "That doesn't look like a valid number. Please enter a valid **10-digit mobile number**."
+      }
+    },
+    {
+      "scenario": "8. Valid Phone Number",
+      "request": {
+        "message": "9876543210",
+        "session_id": "user_123"
+      },
+      "response": {
+        "response": "Thanks! I've noted that. You can ask me **2 more questions** before we wrap up."
+      }
+    },
+    {
+      "scenario": "9. Limit Exhausted (Chat End)",
+      "request": {
+        "message": "One last question...",
+        "session_id": "user_123"
+      },
+      "response": {
+        "response": "Thank you for your interest! **Your query limit has been exhausted.** For further details, please contact our office directly."
+      }
+    }
+  ]
+}

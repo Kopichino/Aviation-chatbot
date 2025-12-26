@@ -7,9 +7,12 @@ from pydantic import BaseModel
 from backend.chatbot_graph import app 
 # Import your Database Logic
 from backend.mongo_db import get_all_leads
+from mangum import Mangum
 
 # Initialize App
 api = FastAPI()
+
+handler = Mangum(api) # Entry point for AWS Lambda
 
 # Setup Templates (to serve HTML files)
 templates = Jinja2Templates(directory="templates")
