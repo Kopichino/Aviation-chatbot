@@ -257,3 +257,76 @@ Then your Admin Panel URL is:
 └── .env                   # Secrets (DO NOT COMMIT)
 
 ```
+
+---
+
+## 🆘 Appendix: Setting up MongoDB Atlas (Required for AWS)
+
+**Critical:** You cannot use `mongodb://localhost:27017` when deploying to AWS Lambda, because the cloud function does not have a database running inside it. You must use a cloud database.
+
+### Step 1: Create the Cloud Database
+
+1.  Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and sign up (it's free).
+2.  Create a new project and select **Build a Database**.
+3.  Choose the **M0 (Free)** tier and click **Create**.
+
+### Step 2: Configure Security (Crucial for Lambda)
+
+AWS Lambda uses rotating IP addresses, so you cannot whitelist a single IP.
+
+1.  Go to **Network Access** (left sidebar).
+2.  Click **Add IP Address**.
+3.  Select **Allow Access from Anywhere** (`0.0.0.0/0`).
+4.  Click **Confirm**.
+
+### Step 3: Create a Database User
+
+1.  Go to **Database Access** (left sidebar).
+2.  Click **Add New Database User**.
+3.  Create a username (e.g., `admin`) and a **strong password**.
+    - _Save this password! You will need it in Step 5._
+4.  Click **Add User**.
+
+### Step 4: Get the Connection String
+
+1.  Go to **Database** (left sidebar) and click **Connect** on your cluster.
+2.  Select **Drivers**.
+3.  Choose **Python** (Version 3.12 or later).
+4.  Copy the connection string. It will look like this:
+    ```text
+    mongodb+srv://admin:<db_password>@cluster0.abcd.mongodb.net/?retryWrites=true&w=majority
+    ```
+
+### Step 5: Update Your Code
+
+Ensure your `backend/mongo_db.py` is updated to read from environment variables instead of hardcoding localhost.
+
+**Update `backend/mongo_db.py`:**
+
+```python
+import os
+from dotenv import load_dotenv
+from pymongo import MongoClient
+
+load_dotenv()
+
+# Get the URI from environment variables
+uri = os.getenv("MONGO_URI")
+
+# Fallback to localhost ONLY if no URI is found (for local testing)
+if not uri:
+    print("⚠️ Using Localhost MongoDB")
+    uri = "mongodb://localhost:27017/"
+
+client = MongoClient(uri)
+db = client["mh_aviation_db"]
+# ... rest of your code
+```
+
+### Step 6: Add to Environment
+
+1.  **Local Testing:** Update your `.env` file:
+    ```ini
+    MONGO_URI=mongodb+srv://admin:your_real_password@cluster0.abcd.mongodb.net/?retryWrites=true&w=majority
+    ```
+2.  **Production (AWS):** Go to your Lambda function -> **Configuration** -> **Environment variables** and add `MONGO_URI` there.
