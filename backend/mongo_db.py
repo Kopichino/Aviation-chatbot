@@ -1,62 +1,61 @@
 import os
 from pymongo import MongoClient
+from pymongo.errors import WriteError
 from datetime import datetime
 
 # 1. Connect to Local MongoDB
-# '27017' is the default port where MongoDB runs
 client = MongoClient("mongodb://localhost:27017/")
-
-# 2. Create/Select Database
 db = client["mh_aviation_db"]
-
-# 3. Create/Select Collection (Like a Table)
 leads_collection = db["leads"]
 
+# --- FUNCTION 1: SAVE LEAD (Used by Chatbot) ---
 def save_lead_mongo(email, phone=None, name=None, school=None, city=None, chat_history=None):
-    """
-    Saves user details and/or appends chat history.
-    This function uses 'upsert': If user exists, update them. If not, create them.
-    """
-    
-    # Current timestamp
+    """Saves or updates user details and appends chat history."""
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Prepare the data we want to update
-    update_data = {
-        "last_updated": now
-    }
-    
-    # Only update fields if they are provided (not None)
+    # Prepare update data
+    update_data = {"last_updated": now}
     if phone: update_data["phone"] = phone
     if name: update_data["name"] = name
     if school: update_data["school"] = school
     if city: update_data["city"] = city
     
-    # DATABASE OPERATION
-    # $set: Updates the specific fields (name, phone, etc.)
-    # $setOnInsert: Sets 'created_at' only when a new document is created
+    # Define database operation
     operation = {
         "$set": update_data,
         "$setOnInsert": {"created_at": now, "email": email} 
     }
 
-    # If chat history is provided, we want to PUSH it to the list
+    # Append chat history if provided
     if chat_history:
-        # $push: Appends items to an array. 
-        # $each: Allows appending multiple messages at once
         operation["$push"] = {"chat_history": {"$each": chat_history}}
 
-    # Execute
-    # filter={"email": email}: Find user by email
-    # upsert=True: Create if not exists
-    leads_collection.update_one(
-        {"email": email},
-        operation,
-        upsert=True
-    )
+    try:
+        leads_collection.update_one(
+            {"email": email},
+            operation,
+            upsert=True
+        )
+        print(f"✅ MongoDB Update for {email}")
+        return True 
     
-    print(f"✅ MongoDB Update for {email}")
+    except WriteError as e:
+        print(f"❌ DATA REJECTED by MongoDB Validation: {e}")
+        return False
+        
+    except Exception as e:
+        print(f"⚠️ General DB Error: {e}")
+        return False
 
+# --- FUNCTION 2: GET ALL LEADS (Used by Admin Panel) ---
+# <--- THIS WAS MISSING --->
 def get_all_leads():
-    """For the Admin Panel later"""
-    return list(leads_collection.find({}, {"_id": 0})) # Return all, hide internal ID
+    """Fetches all documents from the leads collection for the Admin Dashboard."""
+    # .find() gets everything. 
+    # {"_id": 0} tells Mongo NOT to send the internal ID field which causes errors in JSON.
+    try:
+        leads = list(leads_collection.find({}, {"_id": 0}))
+        return leads
+    except Exception as e:
+        print(f"Error fetching leads: {e}")
+        return []

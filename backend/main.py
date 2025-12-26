@@ -1,59 +1,42 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-from langchain_core.messages import HumanMessage
-from backend.chatbot_graph import app  # Importing the brain
 
-api = FastAPI(title="Aviation Chatbot API")
+# Import your Chatbot Logic
+from backend.chatbot_graph import app 
+# Import your Database Logic
+from backend.mongo_db import get_all_leads
 
-# Allow the frontend to talk to the backend
-api.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Initialize App
+api = FastAPI()
 
-class ChatRequest(BaseModel):
+# Setup Templates (to serve HTML files)
+templates = Jinja2Templates(directory="templates")
+
+# --- 1. CHATBOT ROUTE (Existing) ---
+class UserInput(BaseModel):
     message: str
     session_id: str
 
 @api.post("/chat")
-async def chat_endpoint(request: ChatRequest):
-    try:
-        # 1. Prepare Input
-        input_state = {
-            "messages": [HumanMessage(content=request.message)]
-        }
-        
-        # 2. Config
-        config = {"configurable": {"thread_id": request.session_id}}
-        
-        # 3. Run Graph
-        output = app.invoke(input_state, config=config)
-        
-        # 4. Get Response
-        bot_response = output["messages"][-1].content
-        
-        return {"response": bot_response}
-
-    except Exception as e:
-        # --- ERROR HANDLING ---
-        error_msg = str(e)
-        
-        # Check if it's the specific "Resource Exhausted" error
-        if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
-            return {
-                "response": "⚠️ I am receiving too many requests right now! Please wait 10-15 seconds and try asking again."
-            }
-        
-        # Other errors
-        print(f"Server Error: {e}")
-        return {
-            "response": "⚠️ System Error. Please check the backend terminal."
-        }
+async def chat_endpoint(user_input: UserInput):
+    state = {"messages": [("user", user_input.message)]}
+    config = {"configurable": {"thread_id": user_input.session_id}}
     
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(api, host="127.0.0.1", port=8000)
+    result = app.invoke(state, config=config)
+    bot_reply = result["messages"][-1].content
+    return {"response": bot_reply}
+
+# --- 2. ADMIN PAGE ROUTE (New) ---
+# This serves the visual HTML page
+@api.get("/admin", response_class=HTMLResponse)
+async def admin_panel(request: Request):
+    return templates.TemplateResponse("admin.html", {"request": request})
+
+# --- 3. DATA API ROUTE (New) ---
+# The HTML page will call this URL via JavaScript to get the data
+@api.get("/api/leads")
+async def get_leads_api():
+    leads = get_all_leads()
+    return {"leads": leads}
