@@ -13,7 +13,8 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from dotenv import load_dotenv
 # from backend.database import save_lead 
-from backend.mongo_db import save_lead_mongo
+# from backend.mongo_db import save_lead_mongo
+from backend.dynamo_db import save_lead_dynamo, get_all_leads
 
 load_dotenv()
 
@@ -159,7 +160,7 @@ def process_school_input_node(state: AgentState):
     if email:
         try:
             # We save partial details now. Phone comes later.
-            save_lead_mongo(email, name=name, school=school, city=city)
+            save_lead_dynamo(email=email, name=name, school=school, city=city)
             print(f"✅ Personal Details Saved: {name}, {school}, {city}")
         except Exception as e:
             print(f"⚠️ Mongo Save Warning: {e}")
@@ -202,7 +203,7 @@ def process_phone_input_node(state: AgentState):
 
             # --- SAVE TO MONGO ---
             try:
-                save_lead_mongo(email, phone=digits_only, chat_history=history_log)
+                save_lead_dynamo(email=email, phone=digits_only, chat_history=history_log)
                 print(f"✅ Lead & History Secured: {email}")
             except Exception as e:
                 print(f"⚠️ Mongo Save Warning: {e}")
@@ -230,7 +231,7 @@ def limit_exhausted_node(state: AgentState):
     if email and phone:
         try:
             # Ensure your database.py accepts 4 arguments!
-            save_lead_mongo(email, phone, school, city)
+            save_lead_dynamo(name=name, email=email, phone=phone, school=school, city=city)
             print(f"✅ Lead Saved: {email}")
         except Exception as e:
             print(f"❌ DATABASE ERROR: {e}") 
