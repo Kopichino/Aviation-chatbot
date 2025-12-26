@@ -399,6 +399,7 @@
             class="flex-1 bg-slate-800/50 border border-cyan-500/30 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400"
           />
           <button
+            type="button"
             id="send-button"
             class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg transition-colors"
           >
@@ -421,9 +422,9 @@
     </div>
 
     <script>
-      // Generate session ID on page load
+      // --- 1. SETUP (NO SAVING) ---
+      // Generate a new session ID every time the script loads (page refresh)
       const sessionId = "user_" + Math.random().toString(36).substr(2, 9);
-      let chatOpened = false;
 
       const chatbotToggle = document.getElementById("chatbot-toggle");
       const chatbotWindow = document.getElementById("chatbot-window");
@@ -433,22 +434,26 @@
       const chatIcon = document.getElementById("chat-icon");
       const closeIcon = document.getElementById("close-icon");
 
-      // Toggle chatbot window
+      let chatOpened = false;
+
+      // --- 2. OPEN / CLOSE LOGIC ---
       chatbotToggle.addEventListener("click", () => {
         const isHidden = chatbotWindow.classList.contains("hidden");
 
         if (isHidden) {
+          // Open the window
           chatbotWindow.classList.remove("hidden");
           chatbotWindow.classList.add("flex");
           chatIcon.classList.add("hidden");
           closeIcon.classList.remove("hidden");
 
-          // Show welcome message on first open
+          // Show welcome message only the first time you open it in this session
           if (!chatOpened) {
-            addBotMessage("Welcome to the flight deck! ✈️ ");
+            addBotMessage("Welcome to MH Cockpit! ✈️ ");
             chatOpened = true;
           }
         } else {
+          // Close the window
           chatbotWindow.classList.add("hidden");
           chatbotWindow.classList.remove("flex");
           chatIcon.classList.remove("hidden");
@@ -456,13 +461,11 @@
         }
       });
 
-      // Add bot message to chat
+      // --- 3. UI FUNCTIONS ---
       function addBotMessage(message) {
+        // 1. Render the message first so the user sees it
         const messageDiv = document.createElement("div");
         messageDiv.className = "flex items-start space-x-2 chat-bubble";
-
-        // 1. Convert Markdown to HTML using marked.parse()
-        // 2. We changed <p> to <div> and added the 'markdown-content' class
         messageDiv.innerHTML = `
         <div class="w-8 h-8 bg-cyan-500/20 rounded-full flex items-center justify-center flex-shrink-0">
             <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -474,115 +477,135 @@
                 ${marked.parse(message)}
             </div>
         </div>
-    `;
+        `;
         chatMessages.appendChild(messageDiv);
         scrollToBottom();
+
+        // --- NEW FEATURE: DELAYED REFRESH ---
+        // Check if this is the final "Limit" message
+        if (message.includes("limit has been exhausted")) {
+          console.log("Limit reached. Refreshing in 3 seconds...");
+
+          // Wait 3 seconds (3000ms) so user can read the text, then refresh
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000);
+        }
+        // ------------------------------------
       }
 
-      // Add user message to chat
       function addUserMessage(message) {
         const messageDiv = document.createElement("div");
         messageDiv.className =
           "flex items-start space-x-2 justify-end chat-bubble";
         messageDiv.innerHTML = `
-                <div class="bg-cyan-600 rounded-lg rounded-tr-none px-4 py-2 max-w-[80%]">
-                    <p class="text-sm text-white">${message}</p>
-                </div>
-            `;
+            <div class="bg-cyan-600 rounded-lg rounded-tr-none px-4 py-2 max-w-[80%]">
+                <p class="text-sm text-white">${message}</p>
+            </div>
+        `;
         chatMessages.appendChild(messageDiv);
         scrollToBottom();
       }
 
-      // Add typing indicator
       function addTypingIndicator() {
         const typingDiv = document.createElement("div");
         typingDiv.id = "typing-indicator";
         typingDiv.className = "flex items-start space-x-2";
         typingDiv.innerHTML = `
-                <div class="w-8 h-8 bg-cyan-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                    </svg>
+            <div class="w-8 h-8 bg-cyan-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+            </div>
+            <div class="bg-slate-800/50 rounded-lg rounded-tl-none px-4 py-3">
+                <div class="typing-indicator flex space-x-1">
+                    <span class="w-2 h-2 bg-cyan-400 rounded-full"></span>
+                    <span class="w-2 h-2 bg-cyan-400 rounded-full"></span>
+                    <span class="w-2 h-2 bg-cyan-400 rounded-full"></span>
                 </div>
-                <div class="bg-slate-800/50 rounded-lg rounded-tl-none px-4 py-3">
-                    <div class="typing-indicator flex space-x-1">
-                        <span class="w-2 h-2 bg-cyan-400 rounded-full"></span>
-                        <span class="w-2 h-2 bg-cyan-400 rounded-full"></span>
-                        <span class="w-2 h-2 bg-cyan-400 rounded-full"></span>
-                    </div>
-                </div>
-            `;
+            </div>
+        `;
         chatMessages.appendChild(typingDiv);
         scrollToBottom();
       }
 
-      // Remove typing indicator
       function removeTypingIndicator() {
         const indicator = document.getElementById("typing-indicator");
-        if (indicator) {
-          indicator.remove();
-        }
+        if (indicator) indicator.remove();
       }
 
-      // Scroll to bottom of chat
       function scrollToBottom() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
 
-      // Send message to API
+      // --- 4. API & SEND LOGIC ---
       async function sendMessage(message) {
         if (!message.trim()) return;
 
-        // Add user message to chat
         addUserMessage(message);
         chatInput.value = "";
-
-        // Show typing indicator
         addTypingIndicator();
 
         try {
           const response = await fetch("http://127.0.0.1:8000/chat", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               message: message,
               session_id: sessionId,
             }),
           });
 
+          const data = await response.json();
+          removeTypingIndicator();
+
           if (!response.ok) {
-            throw new Error("Network response was not ok");
+            console.error("Server Error:", data);
+            addBotMessage(
+              "⚠️ System Error: " + (data.detail || "Connection failed")
+            );
+            return;
           }
 
-          const data = await response.json();
+          // Handle response keys safely
+          const botReply =
+            data.response || data.answer || data.message || data.reply;
+          if (botReply) {
+            addBotMessage(botReply);
 
-          // Remove typing indicator
-          removeTypingIndicator();
-
-          // Add bot response
-          addBotMessage(data.response);
+            // OPTIONAL: If you want the page to refresh AUTOMATICALLY after specific bot messages
+            // (e.g. after phone number is accepted), you can add that logic here.
+            // For now, it stays strictly in the chat window.
+          } else {
+            addBotMessage("⚠️ Empty response.");
+          }
         } catch (error) {
-          console.error("Error:", error);
+          console.error("Network Error:", error);
           removeTypingIndicator();
-          addBotMessage(
-            "I'm sorry, I'm having trouble connecting right now. Please try again later or contact us directly at info@mhcockpit.com"
-          );
+          addBotMessage("I'm sorry, I'm having trouble connecting right now.");
         }
       }
 
-      // Send button click
-      sendButton.addEventListener("click", () => {
-        const message = chatInput.value;
-        sendMessage(message);
+      // --- 5. EVENT LISTENERS ---
+
+      // Send button
+      sendButton.addEventListener("click", (e) => {
+        e.preventDefault(); // Prevents page reload
+        sendMessage(chatInput.value);
       });
 
-      // Enter key press
+      // Enter key
       chatInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
-          const message = chatInput.value;
-          sendMessage(message);
+          e.preventDefault(); // Prevents page reload
+          sendMessage(chatInput.value);
+        }
+      });
+
+      // Prevent links from refreshing
+      chatMessages.addEventListener("click", (e) => {
+        if (e.target.tagName === "A" && e.target.getAttribute("href") === "#") {
+          e.preventDefault();
         }
       });
     </script>
