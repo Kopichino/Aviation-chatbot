@@ -24,8 +24,10 @@ Follow these instructions to set up the project locally on your machine.
 ### Prerequisites
 
 * Git
-* Python (depending on your stack)
+* Python 
+* MongoDB
 * A Google AI Studio API Key
+* Pinecone API key
 
 ### Installation
 
@@ -62,6 +64,24 @@ Follow these instructions to set up the project locally on your machine.
     uvicorn backend.main:api --reload
     # Open index2.html in live server
     ```
+
+5. Admin Dashboard
+
+The backend includes a built-in Admin Panel to view leads and chat history.
+
+* **Access URL:** `http://127.0.0.1:8000/admin`
+* **Features:**
+    * View all collected leads (Name, Email, Phone, School, City).
+    * **"View Chat" Button:** Opens a modal showing the full conversation history for that user.
+    * Real-time updates (refresh page to see new leads).
+      
+    * **Admin Panel:**  <img width="1907" height="913" alt="image" src="https://github.com/user-attachments/assets/3b2a2832-a63e-4f0d-9f23-cef042a50fe6" />
+
+      <img width="1911" height="911" alt="image" src="https://github.com/user-attachments/assets/fbdf36d6-48ce-40ca-b49c-65491f4fff3b" />
+
+  
+    * **MongoDB Compass:** <img width="1315" height="229" alt="image" src="https://github.com/user-attachments/assets/ef59a2b9-fe4d-4e09-8bda-cf1ca0180824" />
+
 
 ## 🤝 Contributing
 
