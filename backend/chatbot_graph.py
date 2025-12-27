@@ -9,14 +9,16 @@ from langgraph.graph.message import add_messages
 
 # Imports for AI & DB
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_huggingface import HuggingFaceEmbeddings
+# 
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
 from langchain_pinecone import PineconeVectorStore
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 # from backend.database import save_lead 
 # from backend.mongo_db import save_lead_mongo
 from backend.dynamo_db import save_lead_dynamo, get_all_leads
 
-load_dotenv()
+# load_dotenv()
 
 # --- CONFIGURATION ---
 PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME")
@@ -28,10 +30,11 @@ llm = ChatGoogleGenerativeAI(
     google_api_key=GOOGLE_API_KEY
 )
 
-embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+# embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
 vector_store = PineconeVectorStore(
-    index_name=PINECONE_INDEX_NAME,
+    index_name=os.environ["PINECONE_INDEX_NAME"],
     embedding=embeddings
 )
 

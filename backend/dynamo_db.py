@@ -2,16 +2,16 @@ import os
 import boto3
 from botocore.exceptions import ClientError
 from datetime import datetime
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 # --- IMPORT VALIDATORS ---
 from backend.validators import check_email, check_phone 
 
-load_dotenv()
+# load_dotenv()
 
 # --- CONFIGURATION ---
 TABLE_NAME = "MH_Aviation_Leads" # Make sure this matches AWS Console exactly
-REGION = os.getenv("AWS_DEFAULT_REGION", "us-east-1")
+REGION = os.getenv("AWS_DEFAULT_REGION", "sp-south-1")
 
 try:
     dynamodb = boto3.resource("dynamodb", region_name=REGION)
