@@ -5,6 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MH Aviation - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+      /* 2. ADD THIS: Styles for the Markdown content (Tables, Lists, Bold) */
+      .markdown-body table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0;
+        font-size: 0.9em;
+      }
+      .markdown-body th,
+      .markdown-body td {
+        border: 1px solid #e2e8f0;
+        padding: 8px;
+        text-align: left;
+      }
+      .markdown-body th {
+        background-color: #f1f5f9;
+        font-weight: 600;
+        color: #1e293b;
+      }
+      .markdown-body strong {
+        font-weight: 700;
+        color: #0891b2; /* Cyan color for key points */
+      }
+      .markdown-body ul {
+        list-style-type: disc;
+        padding-left: 20px;
+        margin: 5px 0;
+      }
+      .markdown-body ol {
+        list-style-type: decimal;
+        padding-left: 20px;
+        margin: 5px 0;
+      }
+      .markdown-body h3 {
+        font-size: 1.1em;
+        font-weight: 700;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        color: #1e293b;
+      }
+      .markdown-body p {
+        margin-bottom: 8px;
+      }
+    </style>
   </head>
   <body class="bg-gray-100 min-h-screen p-8">
     <div class="max-w-7xl mx-auto">
@@ -36,7 +83,7 @@
       class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50 backdrop-blur-sm"
     >
       <div
-        class="bg-white rounded-lg w-11/12 md:w-2/3 lg:w-1/2 h-3/4 flex flex-col p-6 shadow-2xl transform transition-all"
+        class="bg-white rounded-lg w-11/12 md:w-3/4 lg:w-2/3 h-5/6 flex flex-col p-6 shadow-2xl transform transition-all"
       >
         <div class="flex justify-between items-center mb-4 border-b pb-2">
           <h3 class="text-xl font-bold text-gray-800">Chat History</h3>
@@ -65,89 +112,79 @@
     </div>
 
     <script>
-      // GLOBAL VARIABLE to store leads data
       let allLeadsData = [];
 
-      // 1. Fetch Data
       async function fetchLeads() {
         try {
           const response = await fetch("/api/leads");
+          // const response = await fetch("http://127.0.0.1:8000/api/leads");
           const data = await response.json();
-
-          // Save data globally so we can access it later
-          allLeadsData = data.leads;
-
+          // Access the array (handle if it returns dict or list directly)
+          allLeadsData = Array.isArray(data) ? data : data.leads || [];
           renderTable(allLeadsData);
         } catch (error) {
           console.error("Error fetching leads:", error);
-          alert("Failed to load data. Is the backend running?");
+          document.getElementById("leads-table-body").innerHTML =
+            '<tr><td colspan="6" class="p-4 text-center text-red-500">Failed to load data</td></tr>';
         }
       }
 
-      // 2. Draw the Table
       function renderTable(leads) {
         const tbody = document.getElementById("leads-table-body");
         tbody.innerHTML = "";
 
-        if (leads.length === 0) {
+        if (!leads || leads.length === 0) {
           tbody.innerHTML =
             '<tr><td colspan="6" class="p-4 text-center text-gray-500">No leads found yet.</td></tr>';
           return;
         }
 
+        // Sort by Latest Date first
+        leads.sort(
+          (a, b) => new Date(b.last_updated) - new Date(a.last_updated)
+        );
+
         leads.forEach((lead, index) => {
           const tr = document.createElement("tr");
           tr.className = "border-b hover:bg-blue-50 transition duration-150";
 
-          // We pass the INDEX (0, 1, 2...) to the function, not the messy object
           tr.innerHTML = `
-                    <td class="p-4 font-semibold text-gray-800">${
-                      lead.name || "N/A"
-                    }</td>
-                    <td class="p-4 text-blue-600 font-medium">${lead.email}</td>
-                    <td class="p-4 text-gray-700 font-mono">${
-                      lead.phone || "-"
-                    }</td>
-                    <td class="p-4 text-gray-600">${lead.school || "-"}, ${
+                <td class="p-4 font-semibold text-gray-800">${
+                  lead.name || "-"
+                }</td>
+                <td class="p-4 text-blue-600 font-medium">${lead.email}</td>
+                <td class="p-4 text-gray-700 font-mono">${
+                  lead.phone || "-"
+                }</td>
+                <td class="p-4 text-gray-600">${lead.school || "-"}, ${
             lead.city || "-"
           }</td>
-                    <td class="p-4 text-sm text-gray-500">${
-                      lead.last_updated || "Just now"
-                    }</td>
-                    <td class="p-4">
-                        <button onclick="openHistory(${index})" 
-                                class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-all transform hover:scale-105">
-                            View Chat
-                        </button>
-                    </td>
-                `;
+                <td class="p-4 text-sm text-gray-500">${
+                  lead.last_updated || "Just now"
+                }</td>
+                <td class="p-4">
+                    <button onclick="openHistory(${index})" 
+                            class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-all transform hover:scale-105">
+                        View Chat
+                    </button>
+                </td>
+            `;
           tbody.appendChild(tr);
         });
       }
 
-      // 3. Open Modal (Using Index)
       function openHistory(index) {
-        const lead = allLeadsData[index]; // Look up the lead from global data
+        const lead = allLeadsData[index];
         const history = lead.chat_history || [];
-
-        const modal = document.getElementById("history-modal");
         const content = document.getElementById("modal-content");
         content.innerHTML = "";
 
         if (history.length === 0) {
-          content.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full text-gray-400">
-                        <svg class="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                        <p>No chat history available.</p>
-                    </div>`;
+          content.innerHTML = `<div class="text-center text-gray-400 mt-10">No chat history.</div>`;
         } else {
           history.forEach((msg) => {
             const div = document.createElement("div");
-            // Check various roles (human, user, ai, bot) to be safe
-            const isBot =
-              msg.role === "ai" ||
-              msg.role === "bot" ||
-              msg.role === "assistant";
+            const isBot = ["ai", "bot", "assistant"].includes(msg.role);
 
             div.className = `flex flex-col max-w-[85%] ${
               isBot ? "self-start" : "self-end items-end"
@@ -156,45 +193,52 @@
             const bubbleColor = isBot
               ? "bg-white border-gray-200 text-gray-800"
               : "bg-cyan-600 text-white";
+
             const align = isBot ? "text-left" : "text-right";
             const icon = isBot ? "🤖" : "👤";
 
+            // 3. CHANGE HERE: Use marked.parse() to convert MD to HTML
+            // We wrapper the content in a div with class 'markdown-body' to apply the CSS styles
+            const parsedHTML = marked.parse(msg.content);
+
             div.innerHTML = `
-                        <div class="flex items-center space-x-2 mb-1 ${
-                          isBot ? "" : "flex-row-reverse space-x-reverse"
-                        }">
-                            <span class="text-sm">${icon}</span>
-                            <span class="text-xs font-bold text-gray-500 uppercase">${
-                              isBot ? "AI Assistant" : "User"
-                            }</span>
+                    <div class="flex items-center space-x-2 mb-1 ${
+                      isBot ? "" : "flex-row-reverse space-x-reverse"
+                    }">
+                        <span class="text-sm">${icon}</span>
+                        <span class="text-xs font-bold text-gray-500 uppercase">${
+                          isBot ? "AI Assistant" : "User"
+                        }</span>
+                    </div>
+                    <div class="${bubbleColor} p-4 rounded-2xl shadow-sm border ${align} text-sm">
+                        <div class="markdown-body">
+                            ${parsedHTML}
                         </div>
-                        <div class="${bubbleColor} p-3 rounded-2xl shadow-sm border ${align} text-sm">
-                            ${msg.content}
-                        </div>
-                        <span class="text-[10px] text-gray-400 mt-1 px-1">${
+                    </div>
+                    <span class="text-[10px] text-gray-400 mt-1 px-1">
+                        ${
                           msg.timestamp
                             ? msg.timestamp.split(" ")[1].split(".")[0]
                             : ""
-                        }</span>
-                    `;
+                        }
+                    </span>
+                `;
             content.appendChild(div);
           });
         }
-        modal.classList.remove("hidden");
+        document.getElementById("history-modal").classList.remove("hidden");
       }
 
       function closeModal() {
         document.getElementById("history-modal").classList.add("hidden");
       }
 
-      // Close modal if clicking outside
       document
         .getElementById("history-modal")
         .addEventListener("click", function (e) {
           if (e.target === this) closeModal();
         });
 
-      // Run on load
       fetchLeads();
     </script>
   </body>

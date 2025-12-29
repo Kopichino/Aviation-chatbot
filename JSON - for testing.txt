@@ -1,0 +1,31 @@
+// 1. Define your API Endpoint (it uses the current domain automatically)
+const url = "/chat"; 
+
+// 2. Define the JSON Payload (User Message + Session ID)
+const payload = {
+    "message": "hi",
+    "session_id": "test-admin-001"
+};
+
+// 3. Send the POST Request
+console.log("🚀 Sending request...");
+
+fetch(url, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+})
+.then(response => {
+    console.log("📨 Status Code:", response.status); // Should be 200
+    return response.json();
+})
+.then(data => {
+    // 4. Print the Bot's Reply
+    console.log("✅ SUCCESS! Bot Reply:", data);
+    console.log("🤖 Message:", data.response);
+})
+.catch(error => {
+    console.error("❌ ERROR:", error);
+});
