@@ -608,7 +608,7 @@ def limit_exhausted_node(state: AgentState):
         user_query = state["messages"][-1].content
         append_chat_history(email, "user", user_query)
 
-        msg = "🚫 **Query Limit Exceeded**\nPlease contact support at +91-98765-43210."
+        msg = "🚫 **Query Limit Exceeded**\nPlease contact support at 9884927480 / 9884807480."
         append_chat_history(email, "bot", msg)
         return {"messages": [AIMessage(content=msg)], "dialog_state": "limit_reached"}
     except:
